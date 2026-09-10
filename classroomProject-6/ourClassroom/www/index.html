@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#172554">
+  <title>Smart Classroom</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <div class="brand">
+      <div class="brand-icon">🏫</div>
+      <div>
+        <h1>Smart Classroom</h1>
+        <p>Intelligent classroom control</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button id="loginTab" class="tab active">Login</button>
+      <button id="registerTab" class="tab">Create account</button>
+    </div>
+
+    <form id="authForm">
+      <label>Email
+        <input id="email" type="email" placeholder="teacher@example.com" required>
+      </label>
+      <label>Password
+        <input id="password" type="password" placeholder="Minimum 6 characters" minlength="6" required>
+      </label>
+      <label id="nameWrap" class="hidden">Name
+        <input id="name" type="text" placeholder="Teacher name">
+      </label>
+      <button class="primary full" type="submit" id="authSubmit">Login</button>
+      <button class="link-button" type="button" id="forgotPassword">Forgot password?</button>
+      <p id="authMessage" class="message"></p>
+    </form>
+
+    <p class="muted center">Firebase Authentication is used for secure sign-in.</p>
+  </main>
+
+  <script type="module" src="./js/auth.js"></script>
+</body>
+</html>

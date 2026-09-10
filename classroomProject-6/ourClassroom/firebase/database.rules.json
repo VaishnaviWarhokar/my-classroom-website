@@ -1,0 +1,40 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "classrooms": {
+      "$classroomId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "sensors": {
+          ".validate": "newData.hasChildren(['pir1','pir2','temperature','updatedAt'])",
+          "pir1": { ".validate": "newData.isBoolean()" },
+          "pir2": { ".validate": "newData.isBoolean()" },
+          "temperature": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" }
+        },
+        "appliances": {
+          ".validate": "newData.hasChildren(['relay1','relay2','relay3','relay4'])",
+          "relay1": { ".validate": "newData.isBoolean()" },
+          "relay2": { ".validate": "newData.isBoolean()" },
+          "relay3": { ".validate": "newData.isBoolean()" },
+          "relay4": { ".validate": "newData.isBoolean()" }
+        },
+        "analytics": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+    "bookings": {
+      "$bookingId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

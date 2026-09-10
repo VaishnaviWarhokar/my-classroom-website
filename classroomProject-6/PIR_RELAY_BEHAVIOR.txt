@@ -1,0 +1,18 @@
+PIR RELAY BEHAVIOR — classroomProject-6
+
+Automatic trigger:
+- PIR is sampled every 1.5 seconds.
+- Three consecutive TRUE readings trigger the corresponding relay pair.
+- PIR1 controls relays 1-2; PIR2 controls relays 3-4.
+- Each triggered pair runs for 30 seconds.
+
+Continuation while ON:
+- During each 30-second ON interval, PIR is checked at 25.5 s, 27 s, and 28.5 s.
+- If all three continuation checks are TRUE, start another full 30-second ON interval.
+- The relay must NOT switch off at the end of the previous interval when continuation succeeds.
+
+Important stop condition:
+- Continuation does not make the relay permanently ON.
+- If PIR later becomes FALSE, the relay remains ON only until the current 30-second interval expires, then turns OFF.
+- A later new sequence of three consecutive TRUE readings can trigger another 30-second interval.
+- PIR1 and PIR2 operate independently and may overlap.
