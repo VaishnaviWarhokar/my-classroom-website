@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#172554">
+  <title>Smart Classroom Dashboard</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand compact">
+    <div class="brand-icon">🏫</div>
+    <div><strong>Smart Classroom</strong><small id="userLabel"></small></div>
+  </div>
+  <button id="logoutBtn" class="ghost">Logout</button>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">SMART CLASSROOM • E009</span>
+      <h1>Classroom Control</h1>
+      <p>Two independent PIR sensors control relay pairs automatically. Temperature is monitored for display only. Manual relay control is always available.</p>
+    </div>
+    <div class="status-pill" id="connectionStatus">Connecting…</div>
+  </section>
+
+  <section class="grid sensors">
+    <article class="card metric accent-card">
+      <span>👤 Occupancy / Motion</span>
+      <strong id="occupancy">--</strong>
+      <small id="pirStatus">Waiting for occupancy sensors</small>
+    </article>
+    <article class="card metric">
+      <span>🌡️ Temperature</span>
+      <strong id="temperature">-- °C</strong>
+      <small id="temperatureStatus">Waiting for temperature data</small>
+    </article>
+    <article class="card metric">
+      <span>📡 Sensor status</span>
+      <strong id="sensorStatus">Offline</strong>
+      <small id="sensorUpdated">No recent update</small>
+    </article>
+    <article class="card metric">
+      <span>⚡ Relay control</span>
+      <strong id="relaySummary">0 / 4 ON</strong>
+      <small id="relayMode">Automatic PIR mode</small>
+    </article>
+  </section>
+
+  <section class="section-title">
+    <div><span class="eyebrow">CLASSROOM</span><h2>E009</h2></div>
+    <button id="bookingBtn" class="primary">＋ Book classroom</button>
+  </section>
+
+  <section class="grid controls">
+    <article class="card appliance">
+      <div><span class="icon">💡</span><h3>Relay 1 • Light</h3><p id="relay1Reason">PIR automatic control</p></div>
+      <label class="switch"><input id="relay1Switch" type="checkbox"><span></span></label>
+    </article>
+    <article class="card appliance">
+      <div><span class="icon">🌀</span><h3>Relay 2 • Fan</h3><p id="relay2Reason">PIR automatic control</p></div>
+      <label class="switch"><input id="relay2Switch" type="checkbox"><span></span></label>
+    </article>
+    <article class="card appliance">
+      <div><span class="icon">🔌</span><h3>Relay 3</h3><p id="relay3Reason">PIR automatic control</p></div>
+      <label class="switch"><input id="relay3Switch" type="checkbox"><span></span></label>
+    </article>
+    <article class="card appliance">
+      <div><span class="icon">💡</span><h3>Relay 4</h3><p id="relay4Reason">PIR automatic control</p></div>
+      <label class="switch"><input id="relay4Switch" type="checkbox"><span></span></label>
+    </article>
+  </section>
+
+  <section class="card settings">
+    <div class="section-title inner">
+      <div><span class="eyebrow">AUTOMATION</span><h2>PIR control</h2></div>
+      <button id="autoBtn" class="secondary">Automatic PIR mode</button>
+    </div>
+    <div class="info-grid">
+      <div><span>PIR 1 trigger</span><strong>3 true samples</strong></div>
+      <div><span>PIR 1 outputs</span><strong>Relay 1 + Relay 2</strong></div>
+      <div><span>PIR 2 trigger</span><strong>3 true samples</strong></div>
+      <div><span>PIR 2 outputs</span><strong>Relay 3 + Relay 4</strong></div>
+      <div><span>Sampling interval</span><strong>1.5 seconds</strong></div>
+      <div><span>Relay ON duration</span><strong>30 seconds</strong></div>
+      <div><span>Temperature</span><strong>Display only</strong></div>
+      <div><span>Manual control</span><strong>Always available</strong></div>
+    </div>
+    <p class="muted">Each PIR is an independent finite-state machine. The latest Firebase PIR value is sampled every 1.5 seconds. Three consecutive true samples trigger its relay pair for 30 seconds. PIR 1 controls relays 1–2 and PIR 2 controls relays 3–4. Both state machines run independently, so their 30-second timers can overlap. Temperature never turns appliances on or off, and manual switches remain available even when sensors are offline.</p>
+  </section>
+
+  <section class="card booking-card">
+    <div class="section-title inner"><div><span class="eyebrow">SCHEDULE</span><h2>Booking & schedule</h2></div></div>
+    <div id="bookingContent" class="empty">No active booking.</div>
+  </section>
+
+  <section class="card logs-card">
+    <div class="section-title inner">
+      <div><span class="eyebrow">FIREBASE LOG</span><h2>Appliance ON/OFF history • last 24 hours</h2></div>
+      <span class="mini-pill">HH:MM:SS</span>
+    </div>
+    <div id="applianceLog" class="usage-log"></div>
+  </section>
+
+  <section class="card analytics-card">
+    <div class="section-title inner">
+      <div><span class="eyebrow">USAGE ANALYSIS</span><h2>Fan usage • last 24 hours</h2></div>
+      <span class="mini-pill">Firebase stored</span>
+    </div>
+    <div id="fanAnalytics" class="analytics-grid">
+      <div><strong>0</strong><span>sessions</span></div>
+      <div><strong>0h 0m</strong><span>total time</span></div>
+      <div><strong>--</strong><span>last user</span></div>
+    </div>
+    <div id="fanLog" class="usage-log"></div>
+  </section>
+</main>
+
+<div id="bookingModal" class="modal hidden">
+  <div class="modal-card">
+    <button class="modal-close" id="closeModal">×</button>
+    <h2>Book E009</h2>
+    <p class="muted">Bookings are automatically considered finished when the end time is reached.</p>
+    <form id="bookingForm">
+      <label>Purpose<input id="bookingPurpose" required placeholder="Lecture / practical / meeting"></label>
+      <label>Date<input id="bookingDate" type="date" required></label>
+      <label>Start time<input id="bookingStartTime" type="time" required></label>
+      <label>Duration
+        <select id="bookingDuration" required>
+          <option value="30">30 minutes</option>
+          <option value="60" selected>1 hour</option>
+          <option value="90">1 hour 30 minutes</option>
+          <option value="120">2 hours</option>
+          <option value="180">3 hours</option>
+          <option value="240">4 hours</option>
+        </select>
+      </label>
+      <div id="bookingEndPreview" class="time-preview">End time will be calculated automatically.</div>
+      <button class="primary full">Confirm booking</button>
+      <p id="bookingMessage" class="message"></p>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="./js/dashboard.js"></script>
+</body>
+</html>
